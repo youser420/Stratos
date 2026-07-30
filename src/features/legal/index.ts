@@ -1,0 +1,10 @@
+export { AnalyticsInit } from "@/features/legal/components/analytics-init";
+export { CookieConsentBanner } from "@/features/legal/components/cookie-consent-banner-client";
+export { LegalPageContent } from "@/features/legal/components/legal-page-content";
+export { cookieCategories, cookiesPolicy } from "@/features/legal/content/cookies";
+export { privacyPolicy } from "@/features/legal/content/privacy";
+export { termsOfService } from "@/features/legal/content/terms";
+export { cookiesMetadata } from "@/features/legal/metadata/cookies";
+export { privacyMetadata } from "@/features/legal/metadata/privacy";
+export { termsMetadata } from "@/features/legal/metadata/terms";
+export type { LegalDocument, LegalSection } from "@/features/legal/types";
