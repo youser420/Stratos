@@ -62,8 +62,12 @@ export default function RootLayout({
       lang="en"
       className={cn("h-full antialiased", geistSans.variable, geistMono.variable, oswald.variable)}
     >
-      <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
-      <body className="min-h-full flex flex-col font-sans">{children}</body>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
+      </head>
+      <body className="min-h-full flex flex-col font-sans">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
