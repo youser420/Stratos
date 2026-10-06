@@ -43,6 +43,15 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * Sets the .dark class before paint, so there's no light-mode flash on a
+ * dark-mode visit. Reads the remembered choice (ThemeToggle's localStorage
+ * key); falls back to the OS/browser preference when nothing's been chosen
+ * yet. Deliberately a plain inline script, not a component: it has to run
+ * before React hydrates.
+ */
+const THEME_BOOT_SCRIPT = `(function(){try{var s=localStorage.getItem("stratos-theme");var d=s?s==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches;document.documentElement.classList.toggle("dark",d);}catch(e){}})();`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -53,6 +62,7 @@ export default function RootLayout({
       lang="en"
       className={cn("h-full antialiased", geistSans.variable, geistMono.variable, oswald.variable)}
     >
+      <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
       <body className="min-h-full flex flex-col font-sans">{children}</body>
     </html>
   );

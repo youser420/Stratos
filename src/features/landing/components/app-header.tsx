@@ -7,6 +7,7 @@ import { buildCoachHref } from "@/config/coach";
 import { BrandLogo } from "@/components/common/brand-logo";
 import { Container } from "@/components/common/container";
 import { HeaderUtilityNav } from "@/components/common/header-utility-nav";
+import { ThemeToggle } from "@/components/common/theme-toggle";
 import { Typography } from "@/components/common/typography";
 import { useCoachUI } from "@/components/providers/coach-ui-provider";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -36,6 +37,7 @@ export function AppHeader({ greeting }: AppHeaderProps) {
             </Typography>
           </div>
           <div className="flex shrink-0 items-center gap-2">
+            <ThemeToggle />
             <Button
               type="button"
               variant="outline"

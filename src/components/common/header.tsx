@@ -3,6 +3,7 @@ import { BrandLogo } from "@/components/common/brand-logo";
 import { HeaderUtilityNav } from "@/components/common/header-utility-nav";
 import { MobileNav } from "@/components/common/mobile-nav";
 import { Navigation } from "@/components/common/navigation";
+import { ThemeToggle } from "@/components/common/theme-toggle";
 import { primaryNavLinks } from "@/config/navigation";
 import { getServerSession } from "@/server/auth/session";
 
@@ -22,6 +23,7 @@ export async function Header() {
             />
           </div>
           <div className="flex shrink-0 items-center gap-2">
+            <ThemeToggle />
             <HeaderUtilityNav
               isAuthenticated={isAuthenticated}
               className="hidden md:flex"
