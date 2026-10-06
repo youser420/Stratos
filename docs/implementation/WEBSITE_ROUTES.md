@@ -381,13 +381,26 @@ Not a page route — excluded from sitemap and marketing IA.
 
 ---
 
+## STRATOS Sphere Routes (authenticated web app)
+
+Implemented per [STRATOS_LANDING_PAGE_ARCHITECTURE.md](./STRATOS_LANDING_PAGE_ARCHITECTURE.md),
+which explicitly overrode the "mobile-only" exclusions below for the Landing Page and its six
+nodes. `/dashboard` now redirects to `/home`.
+
+| Route | Purpose | Auth |
+|-------|---------|------|
+| `/home` | STRATOS Landing Page (the Sphere) | Authenticated, onboarding required |
+| `/home/ascension`, `/home/ascension/[run\|prime\|pump]`, `/home/ascension/analytics` | Ascension node | Authenticated |
+| `/home/recovery`, `/home/recovery/[stretch\|breathe\|nourish]`, `/home/recovery/analytics` | Recovery node | Authenticated |
+| `/home/basecamp` | Basecamp node | Authenticated |
+| `/home/community` | Community node | Authenticated |
+| `/home/reflection` | Reflection node | Authenticated |
+| `/home/coach` | Dedicated Coach experience | Authenticated |
+
 ## Routes Explicitly Not Required (v1)
 
 | Route | Reason |
 |-------|--------|
-| `/dashboard` | Dashboard is mobile-only ([GLOSSARY.md](../GLOSSARY.md)) |
-| `/workouts/*` | Workout logging is mobile-only |
-| `/koach/chat` | Live Koach is mobile-only |
 | `/account/settings` | Could Have — post-launch assumption |
 
 ---

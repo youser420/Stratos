@@ -15,7 +15,7 @@ export async function Header() {
       <Container>
         <div className="flex h-16 items-center justify-between gap-4">
           <div className="flex min-w-0 items-center gap-8">
-            <BrandLogo href={isAuthenticated ? "/dashboard" : "/"} />
+            <BrandLogo href={isAuthenticated ? "/home" : "/"} />
             <Navigation
               links={primaryNavLinks}
               className="hidden lg:block"

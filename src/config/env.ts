@@ -6,6 +6,9 @@ const serverEnvSchema = z.object({
   DATABASE_URL: z.string().min(1),
   BETTER_AUTH_SECRET: z.string().min(32),
   BETTER_AUTH_URL: z.url(),
+  // Optional: Coach (STRATOS Sphere) degrades to a neutral "not available"
+  // state (section 14/16) rather than failing the build when this is unset.
+  ANTHROPIC_API_KEY: z.string().min(1).optional(),
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .default("development"),

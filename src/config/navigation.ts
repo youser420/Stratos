@@ -20,7 +20,7 @@ export const guestUtilityNavLinks: NavLink[] = [
 ];
 
 export const authenticatedUtilityNavLinks: NavLink[] = [
-  { label: "Dashboard", href: "/dashboard" },
+  { label: "STRATOS", href: "/home" },
   { label: "Download", href: "/download" },
 ];
 

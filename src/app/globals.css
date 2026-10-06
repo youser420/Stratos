@@ -191,4 +191,23 @@
   .accent-bar {
     @apply h-1 w-10 bg-primary;
   }
+
+  /*
+   * Coach emblem "living" presence (section 11): restrained breathing glow
+   * while idle, before conversation starts. motion-safe: (applied at the
+   * call site) means this never runs under prefers-reduced-motion.
+   */
+  .coach-living-glow {
+    animation: coach-living-pulse 6s ease-in-out infinite;
+  }
+}
+
+@keyframes coach-living-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 oklch(0.68 0.19 45 / 0));
+  }
+  50% {
+    filter: drop-shadow(0 0 18px oklch(0.68 0.19 45 / 0.45));
+  }
 }

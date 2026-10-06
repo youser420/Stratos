@@ -90,6 +90,22 @@ src/app/
 │   │   ├── constraints/page.tsx
 │   │   ├── preferences/page.tsx
 │   │   └── complete/page.tsx
+├── (app)/                          # STRATOS Sphere — see STRATOS_LANDING_PAGE_ARCHITECTURE.md
+│   ├── layout.tsx                  # AppLayout: auth/onboarding gate, Coach pane
+│   └── home/
+│       ├── page.tsx                # Landing Page (the Sphere)
+│       ├── ascension/
+│       │   ├── page.tsx
+│       │   ├── analytics/page.tsx
+│       │   └── [discipline]/page.tsx
+│       ├── recovery/
+│       │   ├── page.tsx
+│       │   ├── analytics/page.tsx
+│       │   └── [discipline]/page.tsx
+│       ├── basecamp/page.tsx
+│       ├── community/page.tsx
+│       ├── reflection/page.tsx
+│       └── coach/page.tsx
 └── api/
     ├── auth/[...all]/route.ts      # Better Auth (exists)
     ├── onboarding/                 # Planned — see API_BOUNDARIES.md
@@ -132,6 +148,13 @@ src/features/<feature-name>/
 | `legal` | Planned | `src/features/legal/` |
 | `seo` | Planned | `src/features/seo/` |
 | `analytics` | Planned | `src/features/analytics/` |
+| `landing` | Implemented | `src/features/landing/` |
+| `ascension` | Implemented | `src/features/ascension/` |
+| `recovery` | Implemented | `src/features/recovery/` |
+| `reflection` | Implemented | `src/features/reflection/` |
+| `community-hub` | Implemented | `src/features/community-hub/` (distinct from `community`, the public marketing page) |
+| `basecamp` | Implemented | `src/features/basecamp/` |
+| `coach` | Implemented | `src/features/coach/` |
 
 **Never place here:** Generic buttons/inputs (use `components/ui/`), cross-feature imports, raw Prisma client.
 
@@ -178,8 +201,15 @@ src/server/
 ├── http/                 # API response helpers (exists)
 ├── logger/               # Structured logging (exists)
 ├── middleware/           # Planned — auth/onboarding guards helpers
-└── services/             # Planned — cross-cutting server services
-    └── onboarding/       # Onboarding persistence (planned)
+└── services/             # Cross-cutting server services
+    ├── onboarding/       # Onboarding persistence
+    ├── ascension/        # Sphere: Run/Prime/Pump sessions, suggestions, analytics
+    ├── recovery/         # Sphere: Stretch/Breathe/Nourish sessions, suggestions, analytics
+    ├── reflection/        # Sphere: Daily Check-In, history, pattern analytics
+    ├── community/        # Sphere: Outreach, Participation, Goals, Milestones
+    ├── basecamp/         # Sphere: cross-experience synthesis (no composite score)
+    ├── coach/            # Sphere: Anthropic-backed Coach, conversation persistence
+    └── landing/          # Sphere: Landing Page state aggregation
 ```
 
 **Never place here:** React components, client hooks, `"use client"` files.
@@ -335,9 +365,11 @@ src/middleware.ts         # Root middleware — auth/onboarding route guards
 
 ## What Does Not Belong in This Repository (Website Scope)
 
-- Mobile app source code
-- Workout logging UI
-- Koach chat UI
-- Full analytics dashboard
+- Mobile app source code (native iOS/Android)
 
-These are documented as out of scope in [implementation/WEBSITE_REQUIREMENTS.md](../implementation/WEBSITE_REQUIREMENTS.md).
+By earlier product decision this also excluded workout logging UI, Koach chat UI, and a full
+analytics dashboard — see [implementation/WEBSITE_REQUIREMENTS.md](../implementation/WEBSITE_REQUIREMENTS.md).
+That boundary was explicitly overridden for the STRATOS Landing Page and its six Sphere nodes
+(Basecamp, Ascension, Recovery, Community, Coach, Reflection), implemented under `src/app/(app)/home/`
+per [implementation/STRATOS_LANDING_PAGE_ARCHITECTURE.md](../implementation/STRATOS_LANDING_PAGE_ARCHITECTURE.md#implementation-note-web-scope).
+`/dashboard` now redirects to `/home` rather than being a route that doesn't exist.

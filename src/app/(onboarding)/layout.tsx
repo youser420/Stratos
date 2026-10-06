@@ -24,7 +24,7 @@ export default async function Layout({
   const complete = await isOnboardingComplete(session.user.id);
 
   if (complete && !isCompletePage) {
-    redirect("/dashboard");
+    redirect("/home");
   }
 
   return <OnboardingLayout>{children}</OnboardingLayout>;

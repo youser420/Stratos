@@ -57,10 +57,10 @@ export async function resolvePostAuthRedirect(
     return defaultPath;
   }
 
-  const onboardingComplete = defaultPath === "/dashboard";
+  const onboardingComplete = defaultPath === "/home";
 
   if (onboardingComplete && callbackUrl.startsWith("/onboarding")) {
-    return "/dashboard";
+    return "/home";
   }
 
   return callbackUrl;

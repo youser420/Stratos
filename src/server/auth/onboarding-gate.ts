@@ -14,5 +14,5 @@ export async function isOnboardingComplete(userId: string): Promise<boolean> {
 export async function getPostAuthRedirectPath(userId: string): Promise<string> {
   const complete = await isOnboardingComplete(userId);
 
-  return complete ? "/dashboard" : "/onboarding";
+  return complete ? "/home" : "/onboarding";
 }

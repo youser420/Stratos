@@ -20,6 +20,14 @@ model User {
   accounts      Account[]
   onboardingProfile OnboardingProfile?
 
+  ascensionSessions      AscensionSession[]
+  recoverySessions       RecoverySession[]
+  reflections            Reflection[]
+  personalGoals          PersonalGoal[]
+  journeyMilestones      JourneyMilestone[]
+  communityParticipation CommunityParticipation[]
+  coachConversations     CoachConversation[]
+
   @@map("user")
 }
 
@@ -88,4 +96,212 @@ model OnboardingProfile {
 
   @@index([userId])
   @@map("onboarding_profile")
+}
+
+// ---------------------------------------------------------------------------
+// STRATOS Sphere domain
+//
+// Backs the STRATOS Landing Page and its six primary experience nodes
+// (Basecamp, Ascension, Recovery, Community, Coach, Reflection). See
+// docs/implementation/STRATOS_LANDING_PAGE_ARCHITECTURE.md for the governing
+// functional spec these models implement.
+// ---------------------------------------------------------------------------
+
+enum AscensionDiscipline {
+  RUN
+  PRIME
+  PUMP
+}
+
+enum RecoveryDiscipline {
+  STRETCH
+  BREATHE
+  NOURISH
+}
+
+enum SphereSessionStatus {
+  ACTIVE
+  COMPLETED
+  ABANDONED
+}
+
+enum GoalStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  RETIRED
+}
+
+enum MilestoneSource {
+  ASCENSION
+  RECOVERY
+  REFLECTION
+  COMMUNITY
+  GOAL
+  OTHER
+}
+
+enum ParticipationType {
+  OUTREACH_EVENT
+  LOCAL_OPPORTUNITY
+  COMMUNITY_CHECK_IN
+}
+
+enum CoachContextSource {
+  LANDING
+  BASECAMP
+  REFLECTION
+  ASCENSION
+  RECOVERY
+  COMMUNITY
+  DIRECT
+}
+
+enum CoachMessageRole {
+  USER
+  COACH
+}
+
+/// A single Ascension (Run / Prime / Pump) activity session.
+/// `status = ACTIVE` with no `completedAt` represents a recoverable in-progress session (section 5).
+model AscensionSession {
+  id              String              @id @default(cuid())
+  userId          String
+  user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  discipline      AscensionDiscipline
+  status          SphereSessionStatus @default(ACTIVE)
+  startedAt       DateTime            @default(now())
+  completedAt     DateTime?
+  durationMinutes Int?
+  notes           String?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@index([userId])
+  @@index([userId, status])
+  @@index([userId, discipline])
+  @@map("ascension_session")
+}
+
+/// A single Recovery (Stretch / Breathe / Nourish) activity session.
+/// `status = ACTIVE` with no `completedAt` represents a recoverable in-progress session (section 6).
+model RecoverySession {
+  id              String              @id @default(cuid())
+  userId          String
+  user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  discipline      RecoveryDiscipline
+  status          SphereSessionStatus @default(ACTIVE)
+  startedAt       DateTime            @default(now())
+  completedAt     DateTime?
+  durationMinutes Int?
+  notes           String?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@index([userId])
+  @@index([userId, status])
+  @@index([userId, discipline])
+  @@map("recovery_session")
+}
+
+/// The Individual's experiential input layer (section 8). One row per calendar day per user;
+/// `isDraft = true` represents partially-completed, recoverable input that has not been submitted.
+model Reflection {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reflectionDate  DateTime  @db.Date
+  promptResponse  String?
+  moodTag         String?
+  isDraft         Boolean   @default(true)
+  submittedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([userId, reflectionDate])
+  @@index([userId])
+  @@map("reflection")
+}
+
+/// Goals intentionally established by the Individual (section 9). Distinct from JourneyMilestone:
+/// a goal describes intended direction, a milestone describes progress already experienced.
+model PersonalGoal {
+  id          String     @id @default(cuid())
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  status      GoalStatus @default(ACTIVE)
+  targetDate  DateTime?
+  completedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([userId])
+  @@index([userId, status])
+  @@map("personal_goal")
+}
+
+/// Meaningful progress and accomplishments along the way (section 9). May originate from any
+/// approved STRATOS experience; `source`/`sourceRefId` keep automatically-derived milestones
+/// traceable to their supporting evidence.
+model JourneyMilestone {
+  id          String          @id @default(cuid())
+  userId      String
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  source      MilestoneSource
+  sourceRefId String?
+  occurredAt  DateTime        @default(now())
+  createdAt   DateTime        @default(now())
+
+  @@index([userId])
+  @@index([userId, occurredAt])
+  @@map("journey_milestone")
+}
+
+/// Voluntary Community participation log (Outreach events, local opportunities joined, check-ins).
+/// Backs "My Participation" frequency/type analytics (section 9) without a participation score.
+model CommunityParticipation {
+  id         String            @id @default(cuid())
+  userId     String
+  user       User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type       ParticipationType
+  title      String
+  occurredAt DateTime          @default(now())
+  createdAt  DateTime          @default(now())
+
+  @@index([userId])
+  @@index([userId, occurredAt])
+  @@map("community_participation")
+}
+
+/// A Coach conversation thread (section 11). `sourceContext`/`sourceDetail` preserve where Coach
+/// was opened from so legitimately-available context does not need to be restated.
+model CoachConversation {
+  id            String              @id @default(cuid())
+  userId        String
+  user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sourceContext CoachContextSource  @default(DIRECT)
+  sourceDetail  String?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  messages      CoachMessage[]
+
+  @@index([userId])
+  @@index([userId, updatedAt])
+  @@map("coach_conversation")
+}
+
+model CoachMessage {
+  id             String            @id @default(cuid())
+  conversationId String
+  conversation   CoachConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           CoachMessageRole
+  content        String
+  createdAt      DateTime          @default(now())
+
+  @@index([conversationId])
+  @@map("coach_message")
 }

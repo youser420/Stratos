@@ -58,7 +58,7 @@ export function middleware(request: NextRequest) {
     isOnboardingRoute(pathname) &&
     pathname !== ONBOARDING_COMPLETE_PATH
   ) {
-    return redirectTo(request, "/dashboard");
+    return redirectTo(request, "/home");
   }
 
   return continueWithPathname(request);

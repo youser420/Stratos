@@ -1,25 +1,10 @@
 import { redirect } from "next/navigation";
 
-import { DashboardContent, dashboardMetadata } from "@/features/dashboard";
-import { isOnboardingComplete } from "@/server/auth/onboarding-gate";
-import { getServerSession } from "@/server/auth/session";
-
-export const metadata = dashboardMetadata;
-
-export default async function DashboardPage() {
-  const session = await getServerSession();
-
-  if (!session?.user) {
-    redirect("/login?callbackUrl=/dashboard");
-  }
-
-  const onboardingComplete = await isOnboardingComplete(session.user.id);
-
-  if (!onboardingComplete) {
-    redirect("/onboarding");
-  }
-
-  return (
-    <DashboardContent userName={session.user.name} />
-  );
+/**
+ * `/dashboard` is superseded by the STRATOS Landing Page at `/home` (see
+ * docs/implementation/STRATOS_LANDING_PAGE_ARCHITECTURE.md). This redirect
+ * stays so old links and bookmarks keep working.
+ */
+export default function DashboardPage() {
+  redirect("/home");
 }
