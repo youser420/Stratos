@@ -8,7 +8,12 @@ const serverEnvSchema = z.object({
   BETTER_AUTH_URL: z.url(),
   // Optional: Coach (STRATOS Sphere) degrades to a neutral "not available"
   // state (section 14/16) rather than failing the build when this is unset.
-  ANTHROPIC_API_KEY: z.string().min(1).optional(),
+  // Some platforms set an unset dashboard field to "" rather than omitting
+  // it entirely, so an empty string is treated the same as absent here.
+  ANTHROPIC_API_KEY: z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z.string().min(1).optional(),
+  ),
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .default("development"),
